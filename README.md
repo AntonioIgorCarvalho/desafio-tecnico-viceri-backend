@@ -13,6 +13,7 @@ Esta é uma API REST desenvolvida em Java com Spring Boot para gerenciamento de 
 - **H2 Database** (banco em memória)
 - **Maven**
 - **JUnit 5** e **Mockito** (para testes)
+- **Springdoc OpenAPI** / **Swagger UI**
 
 ## Funcionalidades
 
