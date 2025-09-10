@@ -164,7 +164,6 @@ class HeroiServiceTest {
     @Test
     void deveAtualizarHeroiComSucesso() {
         // Arrange
-        // Criar um herói com superpoderes para simular o comportamento real
         Heroi heroiComSuperpoderes = new Heroi(
                 "Clark Kent",
                 "Superman",
@@ -174,7 +173,6 @@ class HeroiServiceTest {
         );
         heroiComSuperpoderes.setId(1);
 
-        // Adicionar um superpoder ao herói para o teste
         HeroiSuperpoder heroiSuperpoder = new HeroiSuperpoder();
         heroiSuperpoder.setHeroi(heroiComSuperpoderes);
         heroiSuperpoder.setSuperpoder(superpoder);
@@ -183,7 +181,6 @@ class HeroiServiceTest {
         heroiComSuperpoderes.getHeroiSuperpoderes().add(heroiSuperpoder);
 
         when(heroiRepository.findByIdWithSuperpoderes(anyInt())).thenReturn(Optional.of(heroiComSuperpoderes));
-        when(heroiRepository.existsByNomeHeroiAndIdNot(anyString(), anyInt())).thenReturn(false);
         when(superpoderService.todosIdsExistem(anyList())).thenReturn(true);
         when(superpoderService.buscarPorIds(anyList())).thenReturn(Arrays.asList(superpoder));
         when(heroiRepository.save(any(Heroi.class))).thenReturn(heroiComSuperpoderes);
@@ -195,7 +192,15 @@ class HeroiServiceTest {
         assertNotNull(resultado);
         assertEquals("Superman", resultado.getNomeHeroi());
         assertEquals("Clark Kent", resultado.getNome());
+        assertEquals(LocalDateTime.of(1938, 6, 1, 0, 0), resultado.getDataNascimento());
+        assertEquals(1.91, resultado.getAltura());
+        assertEquals(102.0, resultado.getPeso());
         assertNotNull(resultado.getSuperpoderes());
+        assertEquals(1, resultado.getSuperpoderes().size());
+        assertEquals("Super Força", resultado.getSuperpoderes().get(0).getSuperpoder());
+        verify(heroiRepository).findByIdWithSuperpoderes(1);
+        verify(superpoderService).todosIdsExistem(Arrays.asList(1, 2));
+        verify(superpoderService).buscarPorIds(Arrays.asList(1, 2));
         verify(heroiRepository).save(any(Heroi.class));
     }
 
