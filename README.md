@@ -124,6 +124,9 @@ mvn spring-boot:run
     - Usuario: sa
     - Senha: password
 
+Acesse a interface Swagger para explorar e testar os endpoints da API:  
+[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
+
 ### Executar Testes
 ```bash
 mvn test
