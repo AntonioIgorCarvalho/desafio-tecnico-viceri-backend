@@ -180,9 +180,12 @@ class HeroiServiceTest {
         heroiSuperpoder.setSuperpoderId(1);
         heroiComSuperpoderes.getHeroiSuperpoderes().add(heroiSuperpoder);
 
+        // Mock para as chamadas do repositório
+        when(heroiRepository.findById(anyInt())).thenReturn(Optional.of(heroiComSuperpoderes));
         when(heroiRepository.findByIdWithSuperpoderes(anyInt())).thenReturn(Optional.of(heroiComSuperpoderes));
         when(superpoderService.todosIdsExistem(anyList())).thenReturn(true);
         when(superpoderService.buscarPorIds(anyList())).thenReturn(Arrays.asList(superpoder));
+        when(heroiRepository.saveAndFlush(any(Heroi.class))).thenReturn(heroiComSuperpoderes);
         when(heroiRepository.save(any(Heroi.class))).thenReturn(heroiComSuperpoderes);
 
         // Act
@@ -198,9 +201,13 @@ class HeroiServiceTest {
         assertNotNull(resultado.getSuperpoderes());
         assertEquals(1, resultado.getSuperpoderes().size());
         assertEquals("Super Força", resultado.getSuperpoderes().get(0).getSuperpoder());
+
+        // Verificar chamadas aos mocks
+        verify(heroiRepository).findById(1);
         verify(heroiRepository).findByIdWithSuperpoderes(1);
         verify(superpoderService).todosIdsExistem(Arrays.asList(1, 2));
         verify(superpoderService).buscarPorIds(Arrays.asList(1, 2));
+        verify(heroiRepository).saveAndFlush(any(Heroi.class));
         verify(heroiRepository).save(any(Heroi.class));
     }
 

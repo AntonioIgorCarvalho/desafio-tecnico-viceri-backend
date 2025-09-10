@@ -86,7 +86,7 @@ public class HeroiService {
 
     @Transactional
     public HeroiResponseDTO atualizar(Integer id, HeroiRequestDTO heroiRequestDTO) {
-        Heroi heroi = heroiRepository.findByIdWithSuperpoderes(id)
+        Heroi heroi = heroiRepository.findById(id)
                 .orElseThrow(() -> new HeroiNotFoundException(id));
 
         // Verificar se o novo nome do herói já existe (exceto para este herói)
@@ -107,11 +107,16 @@ public class HeroiService {
         heroi.setAltura(heroiRequestDTO.getAltura());
         heroi.setPeso(heroiRequestDTO.getPeso());
 
-        // Limpar os superpoderes atuais
+        // Remover todas as associações existentes de forma manual
         heroi.getHeroiSuperpoderes().clear();
 
-        // Adicionar os novos superpoderes
+        // Forçar o flush para remover as associações do banco
+        heroiRepository.saveAndFlush(heroi);
+
+        // Buscar os superpoderes uma única vez
         List<Superpoder> superpoderes = superpoderService.buscarPorIds(heroiRequestDTO.getSuperpoderesIds());
+
+        // Adicionar os novos superpoderes
         for (Superpoder superpoder : superpoderes) {
             HeroiSuperpoder heroiSuperpoder = new HeroiSuperpoder();
             heroiSuperpoder.setHeroi(heroi);
@@ -122,8 +127,14 @@ public class HeroiService {
         }
 
         heroi = heroiRepository.save(heroi);
+
+        // Recarregar o herói com os superpoderes para retorno
+        heroi = heroiRepository.findByIdWithSuperpoderes(id)
+                .orElseThrow(() -> new HeroiNotFoundException(id));
+
         return convertToResponseDTO(heroi);
     }
+
 
     @Transactional
     public void deletar(Integer id) {
