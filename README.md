@@ -108,7 +108,7 @@ Esta é uma API REST desenvolvida em Java com Spring Boot para gerenciamento de 
 
 1. **Clone o repositório:**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/AntonioIgorCarvalho/desafio-tecnico-viceri-backend
 cd superheroes-api
 ```
 
